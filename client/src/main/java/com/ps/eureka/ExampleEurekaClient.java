@@ -29,6 +29,18 @@ public class ExampleEurekaClient {
     private static ApplicationInfoManager applicationInfoManager;
     private static EurekaClient eurekaClient;
 
+    public static void main(String[] args) {
+        System.setProperty("eureka.client.props", "example-eureka-client");
+        ExampleEurekaClient sampleClient = new ExampleEurekaClient();
+        // create the client
+        ApplicationInfoManager applicationInfoManager = initializeApplicationInfoManager(new MyDataCenterInstanceConfig());
+        EurekaClient client = initializeEurekaClient(applicationInfoManager, new DefaultEurekaClientConfig());
+        // use the client
+        sampleClient.sendRequestToServiceUsingEureka(client);
+        // shutdown the client
+        eurekaClient.shutdown();
+    }
+
     private static synchronized ApplicationInfoManager initializeApplicationInfoManager(EurekaInstanceConfig instanceConfig) {
         if (applicationInfoManager == null) {
             InstanceInfo instanceInfo = new EurekaConfigBasedInstanceInfoProvider(instanceConfig).get();
@@ -85,18 +97,6 @@ public class ExampleEurekaClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        System.setProperty("eureka.client.props", "example-eureka-client");
-        ExampleEurekaClient sampleClient = new ExampleEurekaClient();
-        // create the client
-        ApplicationInfoManager applicationInfoManager = initializeApplicationInfoManager(new MyDataCenterInstanceConfig());
-        EurekaClient client = initializeEurekaClient(applicationInfoManager, new DefaultEurekaClientConfig());
-        // use the client
-        sampleClient.sendRequestToServiceUsingEureka(client);
-        // shutdown the client
-        eurekaClient.shutdown();
     }
 
 }
